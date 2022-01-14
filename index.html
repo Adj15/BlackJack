@@ -1,1 +1,153 @@
-Hello World
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap 101 Template</title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+
+    <style>
+        .top10 { margin-top:10px; }
+        .table tbody tr td{
+            vertical-align: middle;
+            text-align: center;
+        }
+        .table thead tr td{
+            vertical-align: middle;
+            text-align: center;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div class="container"  >
+    <h1 class="text-center">21点计分器</h1>
+</div>
+
+
+<div class="container" id="initial">
+    <button type="button" class="btn btn-primary" id="add">新增玩家</button>
+    <button type="button" class="btn btn-primary" id="start">开始游戏</button>
+</div>
+<!--<br>-->
+<!--<div class="container initial">-->
+    <!--<button type="button" class="btn btn-primary" id="add">新增玩家</button>-->
+    <!--<button type="button" class="btn btn-primary" id="start">开始游戏</button>-->
+
+<!--</div>-->
+
+<div class="container">
+    <table class="table table-bordered" id="pTable" style="display:none">
+        <caption id="info"></caption>
+        <thead>
+        <tr>
+            <th>姓名</th>
+            <th>总得分</th>
+            <th>本轮得分</th>
+        </tr>
+        </thead>
+        <tbody id="pTbody">
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-primary" id="next" style="display:none">下一轮</button>
+</div>
+
+
+
+<!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+<!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+<script>
+    var pNum = 0;
+    var boss = 0;
+    var part = 1;
+    $(function(){
+
+        $("#add").click(function () {
+
+            $("#initial").on("click",".delete",function(){
+                $(this).parent().parent().remove();
+            });
+
+            $("#initial").append("<div class='input-group  top10'>\n" +
+                "        <input type='text' class='form-control person' placeholder='输入姓名'>\n" +
+                "        <span class='input-group-btn'>\n" +
+                "            <button class='btn btn-default delete' type='button'>Delete</button>\n" +
+                "        </span>\n" +
+                "    </div>");
+        });
+
+
+        $("#start").click(function () {
+            pNum = $(".person").length;
+            $("#initial").hide();
+            $("#pTable").show();
+            $("#next").show();
+//            alert(pNum);
+            $("#info").text($(".person")[boss].value+"坐庄，第"+part+"轮");
+            for (var i=0; i < pNum; i++) {
+                var name = $(".person")[i].value;
+                $("#pTbody").append(
+                    "<tr>\n" +
+                    "        <td>"+ name +"</td>\n" +
+                    "        <td id='score"+i+"'>0</td>\n" +
+                    "        <td><input type='number' class='form-control person' id='cur_score"+i+"' placeholder='输入得分'></td>\n" +
+                    "        </tr>"
+                );
+
+            }
+        });
+
+
+        $("#next").click(function () {
+            var score = 0;
+            for (var i=0; i < pNum; i++) {
+                score += $("#cur_score"+i).val()-0;
+            }
+            if (score == 0) {
+                if (part === 5) {
+                    part = 1;
+                    if (boss === pNum-1) {
+                        boss = 0;
+                    } else {
+                        boss++;
+                    }
+                } else {
+                    part++;
+                }
+                $("#info").text($(".person")[boss].value+"坐庄，第"+part+"轮");
+
+                for (var i=0; i < pNum; i++) {
+                    var score = ($("#cur_score"+i).val()- 0) + ($("#score"+i).text() - 0);
+                    $("#score"+i).text(score+"");
+                    $("#cur_score"+i).val("");
+
+                }
+
+
+
+
+            } else {
+                alert("计算有误，请重新输入！")
+            }
+        });
+
+
+
+
+    });
+
+</script>
+
+</body>
+</html>
+
+
+
